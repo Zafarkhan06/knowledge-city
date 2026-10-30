@@ -1,7 +1,7 @@
 // Slice 1: S-1 (split a bill equally) and S-2 (shares always add up exactly).
 const { test, expect } = require('@playwright/test');
-const { RESULT_CASES } = require('../criteria.js');
-const { field, button, openApp, fillForm, expectResult } = require('./helpers.js');
+const { RESULT_CASES, MESSAGES, NO_MESSAGES } = require('../criteria.js');
+const { field, button, openApp, fillForm, expectMessages, expectResult } = require('./helpers.js');
 
 test.beforeEach(async ({ page }) => {
   await openApp(page);
@@ -15,8 +15,10 @@ test('S-1.1 starting page: three empty labelled fields, two buttons, no result, 
   await expect(button.calculate(page)).toBeVisible();
   await expect(button.startOver(page)).toBeVisible();
   await expect(page.locator('#result')).toBeHidden();
-  for (const message of await page.locator('.field-error').all()) {
-    await expect(message).toHaveText('');
+  // The three message slots must exist and be empty, and no message text may appear anywhere.
+  await expectMessages(page, NO_MESSAGES);
+  for (const text of Object.values(MESSAGES)) {
+    await expect(page.locator('body')).not.toContainText(text);
   }
 });
 

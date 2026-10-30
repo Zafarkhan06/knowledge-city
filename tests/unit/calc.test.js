@@ -2,15 +2,37 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const BillSplit = require('../../src/calc.js');
-const { RESULT_CASES, toCents, sumOfShares } = require('../criteria.js');
+const { RESULT_CASES, MORE_RESULT_CASES, SEQUENCE_CASES, ERROR_CASES, toCents, sumOfShares } = require('../criteria.js');
 
-for (const c of RESULT_CASES) {
+for (const c of [...RESULT_CASES, ...MORE_RESULT_CASES]) {
   test(`${c.id} ${c.name}`, () => {
     const outcome = BillSplit.calculate(c.input.bill, c.input.tip, c.input.people);
     assert.equal(outcome.ok, true);
     assert.deepEqual(outcome.lines, c.expected);
     // The shares always add up to exactly the Total.
     assert.equal(sumOfShares(outcome.lines.shares), toCents(c.expected.total.replace('Total: ', '')));
+  });
+}
+
+for (const c of SEQUENCE_CASES) {
+  test(`${c.id} ${c.name}`, () => {
+    let input = {};
+    for (const step of c.steps) {
+      input = { ...input, ...(step.input || step.change) };
+      const outcome = BillSplit.calculate(input.bill, input.tip, input.people);
+      assert.equal(outcome.ok, true);
+      assert.deepEqual(outcome.lines, step.expected);
+    }
+  });
+}
+
+// Each field's message must match exactly, including '' for fields that are fine.
+for (const c of ERROR_CASES) {
+  test(`${c.id} ${c.name}`, () => {
+    const outcome = BillSplit.calculate(c.input.bill, c.input.tip, c.input.people);
+    assert.equal(outcome.ok, false);
+    assert.deepEqual(outcome.messages, c.messages);
+    assert.equal(outcome.lines, undefined);
   });
 }
 

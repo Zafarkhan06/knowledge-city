@@ -8,6 +8,11 @@
     tip: document.getElementById('tip'),
     people: document.getElementById('people'),
   };
+  var messages = {
+    bill: document.getElementById('bill-error'),
+    tip: document.getElementById('tip-error'),
+    people: document.getElementById('people-error'),
+  };
   var result = document.getElementById('result');
   var resultTip = document.getElementById('result-tip');
   var resultTotal = document.getElementById('result-total');
@@ -32,11 +37,25 @@
     result.hidden = true;
   }
 
+  // Writes each field's message ('' clears it) and marks the field invalid when it has one.
+  function showMessages(texts) {
+    Object.keys(messages).forEach(function (name) {
+      messages[name].textContent = texts[name];
+      if (texts[name]) inputs[name].setAttribute('aria-invalid', 'true');
+      else inputs[name].removeAttribute('aria-invalid');
+    });
+  }
+
   // Calculate is the form's submit button, so pressing Enter in any field also lands here.
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     var outcome = BillSplit.calculate(inputs.bill.value, inputs.tip.value, inputs.people.value);
-    if (outcome.ok) showResult(outcome.lines);
-    else hideResult(); // messages for input that can't be used arrive with S-3 and S-4
+    if (outcome.ok) {
+      showMessages({ bill: '', tip: '', people: '' });
+      showResult(outcome.lines);
+    } else {
+      showMessages(outcome.messages);
+      hideResult();
+    }
   });
 })();

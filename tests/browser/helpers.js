@@ -28,6 +28,35 @@ async function fillForm(page, input) {
   await field.people(page).fill(input.people);
 }
 
+// Changes only the named fields, the way a person edits one value.
+async function applyChange(page, change) {
+  for (const [name, value] of Object.entries(change)) {
+    await field[name](page).fill(value);
+  }
+}
+
+// Each field's message (#bill-error, #tip-error, #people-error): exact text, shown directly
+// under the field, and linked to the field so screen readers announce it with the field.
+async function expectMessages(page, messages) {
+  for (const [name, text] of Object.entries(messages)) {
+    const input = field[name](page);
+    const message = page.locator(`#${name}-error`);
+    await expect(message).toHaveText(text);
+    await expect(input).toHaveAccessibleDescription(text);
+    if (!text) {
+      await expect(input).not.toHaveAttribute('aria-invalid', 'true');
+      continue;
+    }
+    await expect(message).toBeVisible();
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    const inputBox = await input.boundingBox();
+    const messageBox = await message.boundingBox();
+    const gap = messageBox.y - (inputBox.y + inputBox.height);
+    expect(gap, `${name} message should start just below the field`).toBeGreaterThanOrEqual(0);
+    expect(gap, `${name} message should start just below the field`).toBeLessThan(24);
+  }
+}
+
 async function expectResult(page, expected) {
   await expect(page.locator('#result')).toBeVisible();
   await expect(page.locator('#result-tip')).toHaveText(expected.tip);
@@ -41,4 +70,4 @@ async function expectResult(page, expected) {
   }
 }
 
-module.exports = { APP_URL, field, button, openApp, fillForm, expectResult };
+module.exports = { APP_URL, field, button, openApp, fillForm, applyChange, expectMessages, expectResult };

@@ -6,8 +6,8 @@ Roles are defined in [app-roles.md](app-roles.md) and jobs in [jobs-to-be-done.m
 |---|---|---|---|---|---|
 | S-1 | Bill Payer | Split a bill equally, including the tip | J-1 | Must | Implemented |
 | S-2 | Bill Payer | Shares always add up exactly, and leftover cents go to named people | J-2 | Must | Implemented |
-| S-3 | Bill Payer | Clear messages for numbers the app can't use | J-3 | Must | Not implemented |
-| S-4 | Bill Payer | Allowed range for each input | J-3 | Must | Not implemented |
+| S-3 | Bill Payer | Clear messages for numbers the app can't use | J-3 | Must | Implemented |
+| S-4 | Bill Payer | Allowed range for each input | J-3 | Must | Implemented |
 | S-5 | Bill Payer | Change a number after a result or an error | J-4 | Must | Not implemented |
 | S-6 | Bill Payer | Start over | J-4 | Must | Not implemented |
 | S-7 | Bill Payer | Works on phone and desktop | J-1 | Must | Not implemented |
@@ -154,7 +154,7 @@ As a Bill Payer, I want a clear message next to any number the app can't use, an
 
 - **Serves:** J-3
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 In S-3.2 to S-3.12 and S-3.18 to S-3.21, the two fields not under test hold valid values (Bill amount `100.00`, Tip percentage `15`, Number of people `4`) and show no message.
 
@@ -173,7 +173,7 @@ In S-3.2 to S-3.12 and S-3.18 to S-3.21, the two fields not under test hold vali
 - **S-3.11** (decimal people) Given Number of people is any one of `2.5`, `4.0`, `3,5`, when I press Calculate, then I see `Number of people must be a whole number.` and no result.
 - **S-3.12** (negative people) Given Number of people is `-3`, when I press Calculate, then I see `Number of people must be between 1 and 50.` and no result.
 - **S-3.13** (several errors at once) Given Bill amount is `abc`, Tip percentage is `-5` and Number of people is `2.5`, when I press Calculate, then I see all three messages at the same time, each under its own field (`Bill amount must be a number, for example 84.50.`, `Tip percentage must be between 0 and 100.`, `Number of people must be a whole number.`), and no result.
-- **S-3.14** (never NaN or Infinity) Given any of the invalid inputs in this story, when I press Calculate, then no amount, `NaN`, `Infinity` or `undefined` appears anywhere on the page.
+- **S-3.14** (never NaN or Infinity) Given any of the invalid inputs in this story, when I press Calculate, then no tip, total or share is shown, and `NaN`, `Infinity` or `undefined` appear nowhere on the page.
 - **S-3.15** (bill starting with a separator) Given Bill amount is `.5` or `,5`, Tip percentage is `0` and Number of people is `1`, when I press Calculate, then I see `Tip: 0.00`, `Total: 0.50`, `Person 1: 0.50`.
 - **S-3.16** (bill ending with a separator) Given Bill amount is `5.` or `5,`, Tip percentage is `0` and Number of people is `1`, when I press Calculate, then I see `Tip: 0.00`, `Total: 5.00`, `Person 1: 5.00`.
 - **S-3.17** (tip starting or ending with a separator) Given Bill amount is `100.00` and Number of people is `1`, when I press Calculate with Tip percentage `.5` or `,5`, then I see `Tip: 0.50`, `Total: 100.50`, `Person 1: 100.50`; and when I change Tip percentage to `5.` or `5,` and press Calculate, then I see `Tip: 5.00`, `Total: 105.00`, `Person 1: 105.00`.
@@ -188,7 +188,7 @@ As a Bill Payer, I want every input to accept the full range of sensible values 
 
 - **Serves:** J-3
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 **Acceptance criteria**
 

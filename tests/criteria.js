@@ -130,4 +130,143 @@ const RESULT_CASES = [
   },
 ];
 
-module.exports = { RESULT_CASES, shareLines, toCents, sumOfShares };
+// Exact message text from the "Error messages" table in docs/user-stories.md.
+const MESSAGES = {
+  billEmpty: 'Enter the bill amount.',
+  billNotNumber: 'Bill amount must be a number, for example 84.50.',
+  billDecimals: 'Bill amount can have at most 2 decimal places.',
+  billRange: 'Bill amount must be between 0.01 and 100000000.00.',
+  tipEmpty: 'Enter a tip percentage. Enter 0 for no tip.',
+  tipNotNumber: 'Tip percentage must be a number, for example 15.',
+  tipDecimals: 'Tip percentage can have at most 2 decimal places.',
+  tipRange: 'Tip percentage must be between 0 and 100.',
+  peopleEmpty: 'Enter the number of people.',
+  peopleNotNumber: 'Number of people must be a number, for example 4.',
+  peopleWhole: 'Number of people must be a whole number.',
+  peopleRange: 'Number of people must be between 1 and 50.',
+};
+const M = MESSAGES;
+
+// In S-3 and S-4 the fields not under test hold these values and show no message.
+const VALID = { bill: '100.00', tip: '15', people: '4' };
+const NO_MESSAGES = { bill: '', tip: '', people: '' };
+
+// One case per input value: that field gets the message, the other two stay valid and silent.
+function oneFieldWrong(id, name, fieldName, values, message) {
+  return values.map((value) => ({
+    id,
+    name: `${name}: ${fieldName} ${JSON.stringify(value)}`,
+    input: { ...VALID, [fieldName]: value },
+    messages: { ...NO_MESSAGES, [fieldName]: message },
+  }));
+}
+
+// Criteria in S-3 and S-4 where pressing Calculate shows messages and no result.
+const ERROR_CASES = [
+  {
+    id: 'S-3.1', name: 'all three fields empty',
+    input: { bill: '', tip: '', people: '' },
+    messages: { bill: M.billEmpty, tip: M.tipEmpty, people: M.peopleEmpty },
+  },
+  ...oneFieldWrong('S-3.2', 'only spaces', 'bill', ['   '], M.billEmpty),
+  ...oneFieldWrong('S-3.3', 'text in bill', 'bill', ['abc', '$50', '1e3', '1 000', '1,000.00'], M.billNotNumber),
+  ...oneFieldWrong('S-3.4', 'negative bill', 'bill', ['-20'], M.billRange),
+  ...oneFieldWrong('S-3.5', 'too many decimals in bill', 'bill', ['12.345', '1,000'], M.billDecimals),
+  ...oneFieldWrong('S-3.6', 'text in tip', 'tip', ['abc', '15%'], M.tipNotNumber),
+  ...oneFieldWrong('S-3.7', 'negative tip', 'tip', ['-5'], M.tipRange),
+  ...oneFieldWrong('S-3.8', 'too many decimals in tip', 'tip', ['12.555'], M.tipDecimals),
+  ...oneFieldWrong('S-3.9', 'empty tip is not treated as 0', 'tip', [''], M.tipEmpty),
+  ...oneFieldWrong('S-3.10', 'text in people', 'people', ['abc', 'four'], M.peopleNotNumber),
+  ...oneFieldWrong('S-3.11', 'decimal people', 'people', ['2.5', '4.0', '3,5'], M.peopleWhole),
+  ...oneFieldWrong('S-3.12', 'negative people', 'people', ['-3'], M.peopleRange),
+  {
+    id: 'S-3.13', name: 'several errors at once',
+    input: { bill: 'abc', tip: '-5', people: '2.5' },
+    messages: { bill: M.billNotNumber, tip: M.tipRange, people: M.peopleWhole },
+  },
+  ...oneFieldWrong('S-3.18', 'people with a separator at either end', 'people', ['.5', ',5', '5.', '5,'], M.peopleWhole),
+  ...oneFieldWrong('S-3.19', 'minus zero in tip', 'tip', ['-0', '-0.00'], M.tipRange),
+  ...oneFieldWrong('S-3.20', 'minus sign before the decimal-places check', 'bill', ['-12.345'], M.billRange),
+  ...oneFieldWrong('S-3.21', 'minus sign before the whole-number check', 'people', ['-2.5'], M.peopleRange),
+  ...oneFieldWrong('S-4.2', 'below bill minimum', 'bill', ['0', '0.00'], M.billRange),
+  ...oneFieldWrong('S-4.4', 'above bill maximum', 'bill', ['100000000.01', '99999999999999999999'], M.billRange),
+  ...oneFieldWrong('S-4.6', 'above tip maximum', 'tip', ['100.01', '150'], M.tipRange),
+  ...oneFieldWrong('S-4.8', 'outside people range', 'people', ['0', '51'], M.peopleRange),
+  {
+    id: 'S-4.2+S-4.6+S-4.8', name: 'slice 1 gap closed: bill 0, tip 150, 51 people together',
+    input: { bill: '0', tip: '150', people: '51' },
+    messages: { bill: M.billRange, tip: M.tipRange, people: M.peopleRange },
+  },
+];
+
+// Criteria in S-3 and S-4 that give a result.
+const MORE_RESULT_CASES = [
+  ...['.5', ',5'].map((bill) => ({
+    id: 'S-3.15', name: `bill starting with a separator: ${JSON.stringify(bill)}`,
+    input: { bill, tip: '0', people: '1' },
+    expected: { tip: 'Tip: 0.00', total: 'Total: 0.50', shares: shareLines(['0.50', 1]), note: '' },
+  })),
+  ...['5.', '5,'].map((bill) => ({
+    id: 'S-3.16', name: `bill ending with a separator: ${JSON.stringify(bill)}`,
+    input: { bill, tip: '0', people: '1' },
+    expected: { tip: 'Tip: 0.00', total: 'Total: 5.00', shares: shareLines(['5.00', 1]), note: '' },
+  })),
+  {
+    id: 'S-4.1', name: 'bill minimum',
+    input: { bill: '0.01', tip: '0', people: '1' },
+    expected: { tip: 'Tip: 0.00', total: 'Total: 0.01', shares: shareLines(['0.01', 1]), note: '' },
+  },
+  {
+    id: 'S-4.3', name: 'bill maximum',
+    input: { bill: '100000000.00', tip: '0', people: '1' },
+    expected: { tip: 'Tip: 0.00', total: 'Total: 100000000.00', shares: shareLines(['100000000.00', 1]), note: '' },
+  },
+];
+
+// Criteria that calculate, change one field, and calculate again.
+const SEQUENCE_CASES = [
+  ...[['.5', '5.'], [',5', '5,']].map(([first, second]) => ({
+    id: 'S-3.17', name: `tip starting then ending with a separator: ${JSON.stringify(first)} then ${JSON.stringify(second)}`,
+    steps: [
+      {
+        input: { bill: '100.00', tip: first, people: '1' },
+        expected: { tip: 'Tip: 0.50', total: 'Total: 100.50', shares: shareLines(['100.50', 1]), note: '' },
+      },
+      {
+        change: { tip: second },
+        expected: { tip: 'Tip: 5.00', total: 'Total: 105.00', shares: shareLines(['105.00', 1]), note: '' },
+      },
+    ],
+  })),
+  {
+    id: 'S-4.5', name: 'tip minimum then maximum',
+    steps: [
+      {
+        input: { bill: '100.00', tip: '0', people: '1' },
+        expected: { tip: 'Tip: 0.00', total: 'Total: 100.00', shares: shareLines(['100.00', 1]), note: '' },
+      },
+      {
+        change: { tip: '100' },
+        expected: { tip: 'Tip: 100.00', total: 'Total: 200.00', shares: shareLines(['200.00', 1]), note: '' },
+      },
+    ],
+  },
+  {
+    id: 'S-4.7', name: 'people minimum then maximum',
+    steps: [
+      {
+        input: { bill: '100.00', tip: '0', people: '1' },
+        expected: { tip: 'Tip: 0.00', total: 'Total: 100.00', shares: shareLines(['100.00', 1]), note: '' },
+      },
+      {
+        change: { people: '50' },
+        expected: { tip: 'Tip: 0.00', total: 'Total: 100.00', shares: shareLines(['2.00', 50]), note: '' },
+      },
+    ],
+  },
+];
+
+module.exports = {
+  RESULT_CASES, MORE_RESULT_CASES, SEQUENCE_CASES, ERROR_CASES, MESSAGES, NO_MESSAGES,
+  shareLines, toCents, sumOfShares,
+};

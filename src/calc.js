@@ -5,6 +5,35 @@
 var BillSplit = (function () {
   'use strict';
 
+  // Exact text from the "Error messages" table in docs/user-stories.md.
+  var MESSAGES = {
+    bill: {
+      empty: 'Enter the bill amount.',
+      notNumber: 'Bill amount must be a number, for example 84.50.',
+      decimals: 'Bill amount can have at most 2 decimal places.',
+      range: 'Bill amount must be between 0.01 and 100000000.00.',
+    },
+    tip: {
+      empty: 'Enter a tip percentage. Enter 0 for no tip.',
+      notNumber: 'Tip percentage must be a number, for example 15.',
+      decimals: 'Tip percentage can have at most 2 decimal places.',
+      range: 'Tip percentage must be between 0 and 100.',
+    },
+    people: {
+      empty: 'Enter the number of people.',
+      notNumber: 'Number of people must be a number, for example 4.',
+      whole: 'Number of people must be a whole number.',
+      range: 'Number of people must be between 1 and 50.',
+    },
+  };
+
+  // Inclusive limits: bill in cents, tip in hundredths of a percent, people as a count.
+  var LIMITS = {
+    bill: { min: 1n, max: 10000000000n },
+    tip: { min: 0n, max: 10000n },
+    people: { min: 1n, max: 50n },
+  };
+
   // Optional minus, digits, at most one '.' or ',' decimal separator, more digits.
   var NUMBER_PATTERN = /^(-?)(\d*)([.,]?)(\d*)$/;
 
@@ -15,19 +44,28 @@ var BillSplit = (function () {
     return { negative: match[1] === '-', whole: match[2], separator: match[3], fraction: match[4] };
   }
 
-  // Bill amount to cents, Tip percentage to hundredths of a percent ('12.5' -> 1250n).
-  // Returns null for input that can't be used; the messages for it arrive with S-3 and S-4.
-  function parseHundredths(text) {
-    var number = readNumber(text);
-    if (number === null || number.negative || number.fraction.length > 2) return null;
-    return BigInt(number.whole || '0') * 100n + BigInt((number.fraction + '00').slice(0, 2));
-  }
+  // Checks one field in the order the docs give: empty, not a number, starts with '-',
+  // whole number or decimal places, range. Returns { value } or { message }.
+  // Bill becomes cents and tip hundredths of a percent ('12.5' -> 1250n).
+  function checkField(name, text) {
+    var messages = MESSAGES[name];
+    var limits = LIMITS[name];
+    if (String(text).trim() === '') return { message: messages.empty };
 
-  function parsePeople(text) {
     var number = readNumber(text);
-    if (number === null || number.negative || number.separator) return null;
-    var people = BigInt(number.whole);
-    return people >= 1n ? people : null;
+    if (number === null) return { message: messages.notNumber };
+    if (number.negative) return { message: messages.range };
+
+    var value;
+    if (name === 'people') {
+      if (number.separator) return { message: messages.whole };
+      value = BigInt(number.whole);
+    } else {
+      if (number.fraction.length > 2) return { message: messages.decimals };
+      value = BigInt(number.whole || '0') * 100n + BigInt((number.fraction + '00').slice(0, 2));
+    }
+    if (value < limits.min || value > limits.max) return { message: messages.range };
+    return { value: value };
   }
 
   // Calculation rules 2 to 4 in docs/user-stories.md.
@@ -53,14 +91,19 @@ var BillSplit = (function () {
     return "The total doesn't split evenly, so the first " + leftover + ' people each pay 0.01 more.';
   }
 
-  // Typed text in, the exact lines to show out.
+  // Typed text in; either the exact lines to show, or one message per field ('' if that field is fine).
   function calculate(billText, tipText, peopleText) {
-    var bill = parseHundredths(billText);
-    var tip = parseHundredths(tipText);
-    var people = parsePeople(peopleText);
-    if (bill === null || tip === null || people === null) return { ok: false };
+    var bill = checkField('bill', billText);
+    var tip = checkField('tip', tipText);
+    var people = checkField('people', peopleText);
+    if (bill.message || tip.message || people.message) {
+      return {
+        ok: false,
+        messages: { bill: bill.message || '', tip: tip.message || '', people: people.message || '' },
+      };
+    }
 
-    var split = splitBill(bill, tip, people);
+    var split = splitBill(bill.value, tip.value, people.value);
     return {
       ok: true,
       lines: {
