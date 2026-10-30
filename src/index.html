@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bill Splitter</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <h1>Split the bill</h1>
+
+    <form id="split-form" novalidate autocomplete="off">
+      <div class="field">
+        <label for="bill">Bill amount</label>
+        <input id="bill" name="bill" type="text" inputmode="decimal" autocomplete="off" spellcheck="false">
+        <p class="field-error" id="bill-error"></p>
+      </div>
+      <div class="field">
+        <label for="tip">Tip percentage</label>
+        <input id="tip" name="tip" type="text" inputmode="decimal" autocomplete="off" spellcheck="false">
+        <p class="field-error" id="tip-error"></p>
+      </div>
+      <div class="field">
+        <label for="people">Number of people</label>
+        <input id="people" name="people" type="text" inputmode="numeric" autocomplete="off" spellcheck="false">
+        <p class="field-error" id="people-error"></p>
+      </div>
+      <div class="actions">
+        <button type="submit">Calculate</button>
+        <button type="button" id="start-over">Start over</button>
+      </div>
+    </form>
+
+    <div aria-live="polite">
+      <section id="result" hidden>
+        <p id="result-tip"></p>
+        <p id="result-total"></p>
+        <ul id="result-shares"></ul>
+        <p id="result-note" hidden></p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Classic scripts, not modules: browsers block modules on file:// pages. -->
+  <script src="calc.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -4,8 +4,8 @@ Roles are defined in [app-roles.md](app-roles.md) and jobs in [jobs-to-be-done.m
 
 | ID | Role | Story | Serves | Priority | Status |
 |---|---|---|---|---|---|
-| S-1 | Bill Payer | Split a bill equally, including the tip | J-1 | Must | Not implemented |
-| S-2 | Bill Payer | Shares always add up exactly, and leftover cents go to named people | J-2 | Must | Not implemented |
+| S-1 | Bill Payer | Split a bill equally, including the tip | J-1 | Must | Implemented |
+| S-2 | Bill Payer | Shares always add up exactly, and leftover cents go to named people | J-2 | Must | Implemented |
 | S-3 | Bill Payer | Clear messages for numbers the app can't use | J-3 | Must | Not implemented |
 | S-4 | Bill Payer | Allowed range for each input | J-3 | Must | Not implemented |
 | S-5 | Bill Payer | Change a number after a result or an error | J-4 | Must | Not implemented |
@@ -112,7 +112,7 @@ As a Bill Payer, I want to enter the bill amount, a tip percentage and the numbe
 
 - **Serves:** J-1
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 **Acceptance criteria**
 
@@ -132,7 +132,7 @@ As a Bill Payer, I want the shares to always add up to exactly the total, with a
 
 - **Serves:** J-2
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 **Acceptance criteria**
 
