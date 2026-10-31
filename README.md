@@ -64,13 +64,12 @@ A passing run shows 76 unit tests passed, and 260 browser tests passed with 1 sk
   - `browser/`
   - `playwright.config.js`
 - `index.html` at the root only redirects to `src/index.html`, so the site's root address opens the app.
-- `transcripts/` will hold two files: the Claude Code session, and the separate Claude chat I used to draft my prompts to it.
+- `transcripts/` will hold two files: the Claude Code session.
 - `package.json` is only for the tests. Its single dev dependency is `@playwright/test`.
 
 ## How it was built
 
 - **AI tool:** Claude Code (command line), with the model Claude Opus 5.5 (1M context). Claude Code's advisor setting was on, with Fable 5.1 as the reviewer model that Claude consulted at several points.
-- **Prompt drafting:** I used a separate Claude chat to help me draft my prompts to Claude Code.
 - **Code changed by hand:** none. Claude Code wrote all the code, tests and docs under my direction.
 - **My checks:** I reviewed each step and did the checks by hand:
   - opening the app in Chrome, Edge, Firefox and Safari (D-1)
