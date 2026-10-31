@@ -10,7 +10,7 @@ Roles are defined in [app-roles.md](app-roles.md) and jobs in [jobs-to-be-done.m
 | S-4 | Bill Payer | Allowed range for each input | J-3 | Must | Implemented |
 | S-5 | Bill Payer | Change a number after a result or an error | J-4 | Must | Implemented |
 | S-6 | Bill Payer | Start over | J-4 | Must | Implemented |
-| S-7 | Bill Payer | Works on phone and desktop | J-1 | Must | Not implemented |
+| S-7 | Bill Payer | Works on phone and desktop | J-1 | Must | Implemented |
 | S-8 | Group Organiser | Each person pays for what they had plus their part of the tip | J-5 | Later | Not implemented |
 | S-9 | Group Organiser | Clear messages that name the person whose amount is wrong | J-3 | Later | Not implemented |
 | S-10 | Bill Payer | Number keyboard on a phone | J-1 | Must | Not implemented |
@@ -240,7 +240,7 @@ As a Bill Payer, I want the calculator to work on my phone as well as in a deskt
 
 - **Serves:** J-1
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 **Acceptance criteria**
 
@@ -248,7 +248,7 @@ Criterion IDs are kept stable: S-7.1 and S-7.2 became delivery requirements D-1 
 
 - **S-7.3** (phone-sized screen) Given the browser window is 360 × 640 pixels (for example Chrome's device toolbar), when I calculate with the values from S-2.2, then I can read every label, field, button, amount and the note without zooming, and the page does not scroll sideways.
 - **S-7.4** (longest amount on a phone) Given the browser window is 360 × 640 pixels, when I calculate with the values from S-2.8, then `200000000.00` is shown in full on every line it appears and the page does not scroll sideways.
-- **S-7.5** (desktop and keyboard) Given the browser window is 1280 × 800 pixels, when I press Tab repeatedly from the top of the page, then the focus moves through Bill amount, Tip percentage, Number of people, Calculate and Start over in that order, and the page does not scroll sideways.
+- **S-7.5** (desktop and keyboard) Given the browser window is 1280 × 800 pixels, when I press Tab repeatedly from the top of the page (in Safari with its default settings, Option+Tab, because Safari's plain Tab skips buttons on every website), then the focus moves through Bill amount, Tip percentage, Number of people, Calculate and Start over in that order, and the page does not scroll sideways.
 
 ### S-8 Each person pays for what they had plus their part of the tip
 
