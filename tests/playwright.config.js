@@ -17,7 +17,8 @@ module.exports = defineConfig({
   outputDir: '../test-results',
   fullyParallel: true,
   forbidOnly: true,
-  // The test runner has hung twice on this Mac (macOS 27) for no reason we could reproduce.
+  // The test runner hung on this Mac (macOS 27) once for certain and very likely a second time,
+  // for no reason we could reproduce.
   // A normal run takes under a minute; after 5 minutes the run stops and reports as failed.
   // No automatic retries on purpose, so a flaky run stays visible.
   globalTimeout: 5 * 60 * 1000,

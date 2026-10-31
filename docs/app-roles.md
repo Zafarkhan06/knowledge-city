@@ -14,6 +14,8 @@ A Group Organiser is someone collecting the money for a group meal where people 
 
 **How their needs differ:** the Group Organiser cares more about fairness between people than raw speed. They enter one amount per person, so there is more typing and more room for a mistake against a particular name, and each person needs to be able to check their own amount. Their stories are planned for after the first build.
 
+**Not built yet:** the current app does none of the above for the Group Organiser. Their stories, S-8 and S-9, have priority Later.
+
 ## Why two roles, not one or three
 
 These two could be merged into one role ("the person settling the bill"), because it is often the same person on different nights and the app has nothing that separates them. I kept them apart because they need different things from the app (three numbers and speed against one amount per person and a per-person breakdown), and that gives a clean scope line: R-1 for the first build, R-2 later.
