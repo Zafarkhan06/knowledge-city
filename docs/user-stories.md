@@ -8,8 +8,8 @@ Roles are defined in [app-roles.md](app-roles.md) and jobs in [jobs-to-be-done.m
 | S-2 | Bill Payer | Shares always add up exactly, and leftover cents go to named people | J-2 | Must | Implemented |
 | S-3 | Bill Payer | Clear messages for numbers the app can't use | J-3 | Must | Implemented |
 | S-4 | Bill Payer | Allowed range for each input | J-3 | Must | Implemented |
-| S-5 | Bill Payer | Change a number after a result or an error | J-4 | Must | Not implemented |
-| S-6 | Bill Payer | Start over | J-4 | Must | Not implemented |
+| S-5 | Bill Payer | Change a number after a result or an error | J-4 | Must | Implemented |
+| S-6 | Bill Payer | Start over | J-4 | Must | Implemented |
 | S-7 | Bill Payer | Works on phone and desktop | J-1 | Must | Not implemented |
 | S-8 | Group Organiser | Each person pays for what they had plus their part of the tip | J-5 | Later | Not implemented |
 | S-9 | Group Organiser | Clear messages that name the person whose amount is wrong | J-3 | Later | Not implemented |
@@ -207,7 +207,7 @@ As a Bill Payer, I want to change any number after getting a result or an error 
 
 - **Serves:** J-4
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 **Acceptance criteria**
 
@@ -225,7 +225,7 @@ As a Bill Payer, I want to clear everything in one step, so that numbers from th
 
 - **Serves:** J-4
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 **Acceptance criteria**
 

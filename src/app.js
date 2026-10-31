@@ -37,12 +37,19 @@
     result.hidden = true;
   }
 
-  // Writes each field's message ('' clears it) and marks the field invalid when it has one.
+  var NO_MESSAGES = { bill: '', tip: '', people: '' };
+
+  // Writes one field's message ('' clears it). The field is marked invalid (red border) only
+  // while it has message text, so the border never appears on its own.
+  function setMessage(name, text) {
+    messages[name].textContent = text;
+    if (text) inputs[name].setAttribute('aria-invalid', 'true');
+    else inputs[name].removeAttribute('aria-invalid');
+  }
+
   function showMessages(texts) {
     Object.keys(messages).forEach(function (name) {
-      messages[name].textContent = texts[name];
-      if (texts[name]) inputs[name].setAttribute('aria-invalid', 'true');
-      else inputs[name].removeAttribute('aria-invalid');
+      setMessage(name, texts[name]);
     });
   }
 
@@ -51,11 +58,27 @@
     event.preventDefault();
     var outcome = BillSplit.calculate(inputs.bill.value, inputs.tip.value, inputs.people.value);
     if (outcome.ok) {
-      showMessages({ bill: '', tip: '', people: '' });
+      showMessages(NO_MESSAGES);
       showResult(outcome.lines);
     } else {
       showMessages(outcome.messages);
       hideResult();
     }
+  });
+
+  // Any edit removes the result straight away, so an old result never sits next to changed
+  // numbers. It also removes the edited field's own message; other messages stay until Calculate.
+  Object.keys(inputs).forEach(function (name) {
+    inputs[name].addEventListener('input', function () {
+      hideResult();
+      setMessage(name, '');
+    });
+  });
+
+  document.getElementById('start-over').addEventListener('click', function () {
+    form.reset();
+    showMessages(NO_MESSAGES);
+    hideResult();
+    inputs.bill.focus();
   });
 })();
