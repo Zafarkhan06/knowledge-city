@@ -13,7 +13,7 @@ Roles are defined in [app-roles.md](app-roles.md) and jobs in [jobs-to-be-done.m
 | S-7 | Bill Payer | Works on phone and desktop | J-1 | Must | Implemented |
 | S-8 | Group Organiser | Each person pays for what they had plus their part of the tip | J-5 | Later | Not implemented |
 | S-9 | Group Organiser | Clear messages that name the person whose amount is wrong | J-3 | Later | Not implemented |
-| S-10 | Bill Payer | Number keyboard on a phone | J-1 | Must | Not implemented |
+| S-10 | Bill Payer | Number keyboard on a phone | J-1 | Must | Implemented |
 
 Delivery requirements D-1 and D-2 (how the build is run and checked) are at the end of this document. They are not stories, because no role wants them.
 
@@ -306,11 +306,11 @@ As a Bill Payer, I want my phone to show a number keyboard for each input, so th
 
 - **Serves:** J-1
 - **Priority:** Must
-- **Status:** Not implemented
+- **Status:** Implemented
 
 **Acceptance criteria**
 
-- **S-10.1** (moved from S-7.6) Given I have opened the page on a phone, when I tap Bill amount or Tip percentage, then the keyboard shows digits and a decimal separator; and when I tap Number of people, then the keyboard shows digits. (This needs a real phone. It is planned to be checked on the version published to GitHub Pages.)
+- **S-10.1** (moved from S-7.6) Given I have opened the page on a phone, when I tap Bill amount or Tip percentage, then the keyboard shows digits and a decimal separator; and when I tap Number of people, then the keyboard shows digits. (This needs a real phone. It was checked on a phone using the version published to GitHub Pages.)
 
 ---
 

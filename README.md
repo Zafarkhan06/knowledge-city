@@ -15,8 +15,7 @@ It's for the person who picks up the bill at a group meal and needs everyone's s
 - **Phone and desktop.** It works on phone-sized screens and on desktop. There are no accounts and no network calls, and nothing is saved.
 
 The product documents are in [docs/](docs/): [app roles](docs/app-roles.md), [jobs to be done](docs/jobs-to-be-done.md) and [user stories](docs/user-stories.md) with acceptance criteria.
-- **Built and checked:** stories S-1 to S-7.
-- **Waiting for a check on a real phone:** S-10, the number keyboard.
+- **Built and checked:** stories S-1 to S-7, and S-10 (the number keyboard, checked on a real phone).
 - **Planned for later:** S-8 and S-9, splitting by what each person ordered.
 
 ## Why I chose it
@@ -78,6 +77,7 @@ A passing run shows 76 unit tests passed, and 260 browser tests passed with 1 sk
   - the 360 px layout (S-7.3)
   - Safari's keyboard behaviour (S-7.5)
   - Firefox's Network tab (D-2)
+  - the number keyboard on a real phone, using the GitHub Pages version (S-10)
 - **Process:** product docs first, then a plan, then four slices. In each slice:
   1. Tests were written first from the acceptance criteria and run before any new code. In slices 1 to 3 the new tests failed until the code existed. In slice 4 the existing app already passed 10 of the 12 new tests, and no new code was needed to pass them.
   2. Code was then written until the tests passed.
@@ -108,5 +108,5 @@ The full list is A-1 to A-12 in [docs/user-stories.md](docs/user-stories.md). In
 - **D-2 in Firefox is checked by hand.** Playwright's Firefox reports no requests for `file://` pages, so that one browser test is skipped, with the reason given in the test. The source scan in `tests/unit/no-network.test.js` and a manual check of Firefox's Network tab cover it instead.
 - **Safari keyboard.** With Safari's default settings, Tab skips buttons on every website. Use Option+Tab to reach Calculate and Start over.
 - **Screen readers.** Each message is linked to its field and the result is announced, but this hasn't been tested with a screen reader.
-- **Not yet checked on a real phone:** the number keyboard (S-10), and whether the iPhone's decimal keypad offers only a comma in some languages (A-4).
+- **Comma-only keypads not verified (A-4).** On the phone used for the S-10 check, the keypad for Bill amount and Tip percentage showed `.` as the decimal key. Whether some phone languages offer only a comma hasn't been checked. The app accepts `,` as well, in case they do.
 - **Not built:** splitting by what each person ordered (S-8, S-9), tipping on a pre-tax subtotal, fixed-amount tips and names for people.
